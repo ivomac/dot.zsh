@@ -1,0 +1,4 @@
+plugins/fzf-nav/colors/default.zsh
+cache/completions
+cache/histfile
+env/secrets.zsh
