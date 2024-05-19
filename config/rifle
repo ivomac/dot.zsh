@@ -1,0 +1,263 @@
+# vim: ft=cfg
+#
+# This is the configuration file of "rifle", ranger's file executor/opener.
+# Each line consists of conditions and a command.  For each line the conditions
+# are checked and if they are met, the respective command is run.
+#
+# Syntax:
+#   <condition1> , <condition2> , ... = command
+#
+# The command can contain these environment variables:
+#   $1-$9 | The n-th selected file
+#   $1    | All selected files
+#
+# If you use the special command "ask", rifle will ask you what program to run.
+#
+# Prefixing a condition with "!" will negate its result.
+# These conditions are currently supported:
+#   match <regexp> | The regexp matches $1
+#   ext <regexp>   | The regexp matches the extension of $1
+#   mime <regexp>  | The regexp matches the mime type of $1
+#   name <regexp>  | The regexp matches the basename of $1
+#   path <regexp>  | The regexp matches the absolute path of $1
+#   has <program>  | The program is installed (i.e. located in $PATH)
+#   env <variable> | The environment variable "variable" is non-empty
+#   file           | $1 is a file
+#   directory      | $1 is a directory
+#   number <n>     | change the number of this command to n
+#   terminal       | stdin, stderr and stdout are connected to a terminal
+#   X              | A graphical environment is available (darwin, Xorg, or Wayland)
+#
+# There are also pseudo-conditions which have a "side effect":
+#   flag <flags>  | Change how the program is run. See below.
+#   label <label> | Assign a label or name to the command so it can
+#                 | be started with :open_with <label> in ranger
+#                 | or `rifle -p <label>` in the standalone executable.
+#   else          | Always true.
+#
+# Flags are single characters which slightly transform the command:
+#   f | Fork the program, make it run in the background.
+#     |   New command = setsid $command >& /dev/null &
+#   r | Execute the command with root permissions
+#     |   New command = sudo $command
+#   t | Run the program in a new terminal.  If $TERMCMD is not defined,
+#     | rifle will attempt to extract it from $TERM.
+#     |   New command = $TERMCMD -e $command
+# Note: The "New command" serves only as an illustration, the exact
+# implementation may differ.
+# Note: When using rifle in ranger, there is an additional flag "c" for
+# only running the current file even if you have marked multiple files.
+
+#-------------------------------------------
+# Websites
+#-------------------------------------------
+# Rarely installed browsers get higher priority; It is assumed that if you
+# install a rare browser, you probably use it.  Firefox/konqueror/w3m on the
+# other hand are often only installed as fallback browsers.
+ext x?html?, has qutebrowser,      X, flag f = qutebrowser -- "$1"
+ext x?html?, has opera,            X, flag f = opera -- "$1"
+ext x?html?, has firefox,          X, flag f = firefox -- "$1"
+ext x?html?, has chromium-browser, X, flag f = chromium-browser -- "$1"
+ext x?html?, has chromium,         X, flag f = chromium -- "$1"
+ext x?html?, has google-chrome,    X, flag f = google-chrome -- "$1"
+ext x?html?, has w3m,               terminal = w3m "$1"
+
+#-------------------------------------------
+# Misc
+#-------------------------------------------
+
+mime inode/directory = ${EXPLORER} -- "$1"
+
+ext h5|hdf5|nwb, flag f = hdfview "$1"
+
+ext csv|ogw|xls|xlsx|ods, flag t = vd -- "$1"
+ext csv|ogw|xls|xlsx|ods, flag f = libreoffice --calc "$1"
+
+# Define the "editor" for text files as first action
+mime ^text,  label editor = ${VISUAL:-$EDITOR} $2 -- "$1"
+mime ^text,  label pager  = $PAGER -- "$1"
+label editor, ext m|pub|vim|xml|json|tex|py|pl|rb|rs|js|sh|php|dart = ${VISUAL:-$EDITOR} $2 -- "$1"
+label pager,  ext m|pub|vim|xml|json|tex|py|pl|rb|rs|js|sh|php|dart = $PAGER -- "$1"
+
+label editor, mime application/(javascript|octet|xml|json|tex|py|pl|rb|rs|js|sh|php|dart) = ${VISUAL:-$EDITOR} $2 -- "$1"
+label pager, mime application/(javascript|octet|xml|json|tex|py|pl|rb|rs|js|sh|php|dart) = $PAGER -- "$1"
+
+ext 1                         = man "$1"
+ext s[wmf]c, has zsnes, X     = zsnes "$1"
+ext s[wmf]c, has snes9x-gtk,X = snes9x-gtk "$1"
+ext nes, has fceux, X         = fceux "$1"
+ext exe, has wine             = wine "$1"
+name ^[mM]akefile$            = make
+
+#--------------------------------------------
+# Audio without X
+#-------------------------------------------
+mime ^audio|ogg$, terminal, has mpv      = mpv -- "$1"
+mime ^audio|ogg$, terminal, has mplayer2 = mplayer2 -- "$1"
+mime ^audio|ogg$, terminal, has mplayer  = mplayer -- "$1"
+ext midi?,        terminal, has wildmidi = wildmidi -- "$1"
+
+#--------------------------------------------
+# Video/Audio with a GUI
+#-------------------------------------------
+mime ^video|^audio, has gmplayer, X, flag f = gmplayer -- "$1"
+mime ^video|^audio, has smplayer, X, flag f = smplayer "$1"
+mime ^video,        has mpv,      X, flag f = mpv -- "$1"
+mime ^video,        has mpv,      X, flag f = mpv --fs -- "$1"
+mime ^video,        has mplayer2, X, flag f = mplayer2 -- "$1"
+mime ^video,        has mplayer2, X, flag f = mplayer2 -fs -- "$1"
+mime ^video,        has mplayer,  X, flag f = mplayer -- "$1"
+mime ^video,        has mplayer,  X, flag f = mplayer -fs -- "$1"
+mime ^video|^audio, has vlc,      X, flag f = vlc -- "$1"
+mime ^video|^audio, has totem,    X, flag f = totem -- "$1"
+mime ^video|^audio, has totem,    X, flag f = totem --fullscreen -- "$1"
+mime ^audio,        has audacity, X, flag f = audacity -- "$1"
+ext aup,            has audacity, X, flag f = audacity -- "$1"
+
+#--------------------------------------------
+# Video without X
+#-------------------------------------------
+mime ^video, terminal, !X, has mpv       = mpv -- "$1"
+mime ^video, terminal, !X, has mplayer2  = mplayer2 -- "$1"
+mime ^video, terminal, !X, has mplayer   = mplayer -- "$1"
+
+#-------------------------------------------
+# Documents
+#-------------------------------------------
+ext pdf, has zathura,  X, flag f = zathura -- "$1"
+ext pdf, has mupdf,    X, flag f = mupdf "$1"
+ext pdf, has mupdf-x11,X, flag f = mupdf-x11 "$1"
+ext pdf, has apvlv,    X, flag f = apvlv -- "$1"
+ext pdf, has xpdf,     X, flag f = xpdf -- "$1"
+ext pdf, has evince,   X, flag f = evince -- "$1"
+ext pdf, has atril,    X, flag f = atril -- "$1"
+ext pdf, has okular,   X, flag f = okular -- "$1"
+ext pdf, has epdfview, X, flag f = epdfview -- "$1"
+ext pdf, has qpdfview, X, flag f = qpdfview "$1"
+
+ext sc,    has sc,                    = sc -- "$1"
+ext docx?, has catdoc,       terminal = catdoc -- "$1" | $PAGER
+
+ext                        sxc|xlsx?|xlt|xlw|gnm|gnumeric, has gnumeric,    X, flag f = gnumeric -- "$1"
+ext                        sxc|xlsx?|xlt|xlw|gnm|gnumeric, has kspread,     X, flag f = kspread -- "$1"
+ext pptx?|od[dfgpst]|docx?|sxc|xlsx?|xlt|xlw|gnm|gnumeric, has libreoffice, X, flag f = libreoffice "$1"
+ext pptx?|od[dfgpst]|docx?|sxc|xlsx?|xlt|xlw|gnm|gnumeric, has soffice,     X, flag f = soffice "$1"
+ext pptx?|od[dfgpst]|docx?|sxc|xlsx?|xlt|xlw|gnm|gnumeric, has ooffice,     X, flag f = ooffice "$1"
+
+ext djvu, has zathura,X, flag f = zathura -- "$1"
+ext djvu, has evince, X, flag f = evince -- "$1"
+ext djvu, has atril,  X, flag f = atril -- "$1"
+ext djvu, has djview, X, flag f = djview -- "$1"
+
+ext epub, has foliate,      X, flag f = foliate -- "$1"
+ext epub, has ebook-viewer, X, flag f = ebook-viewer -- "$1"
+ext epub, has zathura,      X, flag f = zathura -- "$1"
+ext epub, has mupdf,        X, flag f = mupdf -- "$1"
+ext mobi, has foliate,      X, flag f = foliate -- "$1"
+ext mobi, has ebook-viewer, X, flag f = ebook-viewer -- "$1"
+
+ext cb[rz], has qcomicbook, X, flag f = qcomicbook "$1"
+ext cb[rz], has mcomix,     X, flag f = mcomix -- "$1"
+ext cb[rz], has zathura,    X, flag f = zathura -- "$1"
+ext cb[rz], has atril,      X, flag f = atril -- "$1"
+
+ext sla,  has scribus,      X, flag f = scribus -- "$1"
+
+#-------------------------------------------
+# Images
+#-------------------------------------------
+
+mime ^image, ext emf, has inkscape, X, flag f = inkscape -- "$1"
+
+mime ^image/svg, has inkscape, X, flag f = inkscape -- "$1"
+mime ^image/svg, has display,  X, flag f = display -- "$1"
+
+mime ^image, has qimgv,     X, flag f = qimgv -- "$1"
+mime ^image, has pqiv,      X, flag f = pqiv -- "$1"
+mime ^image, has imv,       X, flag f = imv -- "$1"
+mime ^image, has sxiv,      X, flag f = sxiv -- "$1"
+mime ^image, has feh,       X, flag f, !ext gif = feh -- "$1"
+mime ^image, has mirage,    X, flag f = mirage -- "$1"
+mime ^image, has ristretto, X, flag f = ristretto "$1"
+mime ^image, has eog,       X, flag f = eog -- "$1"
+mime ^image, has eom,       X, flag f = eom -- "$1"
+mime ^image, has nomacs,    X, flag f = nomacs -- "$1"
+mime ^image, has geeqie,    X, flag f = geeqie -- "$1"
+mime ^image, has gpicview,  X, flag f = gpicview -- "$1"
+mime ^image, has gwenview,  X, flag f = gwenview -- "$1"
+mime ^image, has xviewer,   X, flag f = xviewer -- "$1"
+mime ^image, has mcomix,    X, flag f = mcomix -- "$1"
+mime ^image, has gimp,      X, flag f = gimp -- "$1"
+mime ^image, has krita,     X, flag f = krita -- "$1"
+
+ext kra,     has krita,     X, flag f = krita -- "$1"
+ext xcf,                    X, flag f = gimp -- "$1"
+
+#-------------------------------------------
+# Archives
+#-------------------------------------------
+
+# avoid password prompt by providing empty password
+ext 7z, has 7z = 7z -p l "$1" | $PAGER
+# This requires atool
+ext ace|ar|arc|bz2?|cab|cpio|cpt|deb|dgc|dmg|gz,     has atool = atool --list --each -- "$1" | $PAGER
+ext iso|jar|msi|pkg|rar|shar|tar|tgz|xar|xpi|xz|zip, has atool = atool --list --each -- "$1" | $PAGER
+ext 7z|ace|ar|arc|bz2?|cab|cpio|cpt|deb|dgc|dmg|gz,  has atool = atool --extract --each -- "$1"
+ext iso|jar|msi|pkg|rar|shar|tar|tgz|xar|xpi|xz|zip, has atool = atool --extract --each -- "$1"
+
+# Listing and extracting archives without atool:
+ext tar|gz|bz2|xz, has tar = tar vvtf "$1" | $PAGER
+ext tar|gz|bz2|xz, has tar = for file in "$1"; do tar vvxf "$file"; done
+ext bz2, has bzip2 = for file in "$1"; do bzip2 -dk "$file"; done
+ext zip, has unzip = unzip -l "$1" | less
+ext zip, has unzip = for file in "$1"; do unzip -d "${file%.*}" "$file"; done
+ext ace, has unace = unace l "$1" | less
+ext ace, has unace = for file in "$1"; do unace e "$file"; done
+ext rar, has unrar = unrar l "$1" | less
+ext rar, has unrar = for file in "$1"; do unrar x "$file"; done
+ext rar|zip, has qcomicbook, X, flag f = qcomicbook "$1"
+ext rar|zip, has mcomix,     X, flag f = mcomix -- "$1"
+ext rar|zip, has zathura,    X, flag f = zathura -- "$1"
+
+#-------------------------------------------
+# Fonts
+#-------------------------------------------
+mime ^font, has fontforge, X, flag f = fontforge "$1"
+
+#-------------------------------------------
+# Flag t fallback terminals
+#-------------------------------------------
+# Rarely installed terminal emulators get higher priority; It is assumed that
+# if you install a rare terminal emulator, you probably use it.
+# gnome-terminal/konsole/xterm on the other hand are often installed as part of
+# a desktop environment or as fallback terminal emulators.
+mime ^ranger/x-terminal-emulator, has foot = foot "$1"
+mime ^ranger/x-terminal-emulator, has terminology = terminology -e "$1"
+mime ^ranger/x-terminal-emulator, has kitty = kitty -- "$1"
+mime ^ranger/x-terminal-emulator, has alacritty = alacritty -e "$1"
+mime ^ranger/x-terminal-emulator, has sakura = sakura -e "$1"
+mime ^ranger/x-terminal-emulator, has lilyterm = lilyterm -e "$1"
+mime ^ranger/x-terminal-emulator, has termite = termite -x '"$1"'
+mime ^ranger/x-terminal-emulator, has guake = guake -ne "$1"
+mime ^ranger/x-terminal-emulator, has tilda = tilda -c "$1"
+mime ^ranger/x-terminal-emulator, has st = st -e "$1"
+mime ^ranger/x-terminal-emulator, has terminator = terminator -x "$1"
+mime ^ranger/x-terminal-emulator, has urxvt = urxvt -e "$1"
+mime ^ranger/x-terminal-emulator, has pantheon-terminal = pantheon-terminal -e "$1"
+mime ^ranger/x-terminal-emulator, has lxterminal = lxterminal -e "$1"
+mime ^ranger/x-terminal-emulator, has mate-terminal = mate-terminal -x "$1"
+mime ^ranger/x-terminal-emulator, has xfce4-terminal = xfce4-terminal -x "$1"
+mime ^ranger/x-terminal-emulator, has konsole = konsole -e "$1"
+mime ^ranger/x-terminal-emulator, has gnome-terminal = gnome-terminal -- "$1"
+mime ^ranger/x-terminal-emulator, has xterm = xterm -e "$1"
+
+#-------------------------------------------
+# Misc
+#-------------------------------------------
+match ^https: = $BROWSER -- "$1"
+
+#-------------------------------------------
+# Generic file openers
+#-------------------------------------------
+label open, has xdg-open = xdg-open "$1"
+

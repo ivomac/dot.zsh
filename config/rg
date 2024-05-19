@@ -1,0 +1,6 @@
+--glob=!"__pycache__"
+--glob=!".git"
+--glob=!".cache"
+--smart-case
+--no-follow
+--hidden
