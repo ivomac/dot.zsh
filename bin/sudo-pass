@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+
+exec pass show "user/root@$HOST"
