@@ -153,13 +153,14 @@ zle -N _cd-back-and-forth
 # PYTHON VIRTUALENV CONVENIENCE FUNCTION
 
 function pyenv() {
-	if [[ "$1" == "new" ]]; then
-		python -m venv .pyenv
+	[[ -z "$1" ]] && echo "Usage: pyenv <env-name>" && return
+	if [[ ! -d ".$1" ]]; then
+		python -m venv ".$1"
 	fi
 	if [[ -n "$VIRTUAL_ENV" ]]; then
 		deactivate
 	else
-		source .pyenv/bin/activate
+		source ".$1/bin/activate"
 	fi
 }
 
