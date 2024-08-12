@@ -25,3 +25,6 @@ abbr "lg2"="lazygit --git-dir=./.git2"
 abbr "lg3"="lazygit --git-dir=./.git3"
 abbr "mg"="mgitstatus -e -d 4 2> /dev/null"
 abbr "mgf"="mgitstatus -f -e -d 4 2> /dev/null"
+abbr "mgp"="mgitstatus -e -d 4 | grep \"Needs pull\" | awk -F':' '{print \"-C \"\$1\" pull\"}' | xargs -n 3 git"
+abbr "mgP"="mgitstatus -e -d 4 | grep \"Needs push\" | awk -F':' '{print \"-C \"\$1\" push\"}' | xargs -n 3 git"
+
