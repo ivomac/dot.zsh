@@ -6,7 +6,6 @@ export CLUTTER_BACKEND=wayland
 export ELM_ENGINE=wayland
 export ECORE_EVAS_ENGINE=wayland
 export SDL_VIDEODRIVER=wayland
-export MOZ_ENABLE_WAYLAND=1
 
 export WLR_RENDERER=gles2
 
