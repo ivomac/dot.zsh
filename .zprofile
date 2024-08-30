@@ -100,13 +100,13 @@ _SECRETS="$ZDOTDIR/env/secrets.zsh"
 
 if [[ -z "$SSH_CONNECTION" ]] && [[ -z "$SSH_CLIENT" ]] && [[ -z "$SSH_TTY" ]] && [[ -z "$DISPLAY" ]]; then
 	if [[ "$(tty)" == "/dev/tty1" ]]; then
+		source "$ZDOTDIR/env/wayland.zsh"
+		exec systemd-cat /usr/lib/plasma-dbus-run-session-if-needed /usr/bin/startplasma-wayland
+	elif [[ "$(tty)" == "/dev/tty2" ]]; then
 		if [[ "$HOSTNAME" == "ARC3" ]]; then
 			source "$ZDOTDIR/env/wayland.zsh"
 			source "$XDG_CONFIG_HOME/sway/env/vars.zsh"
 			exec systemd-cat sway
-		elif [[ "$HOSTNAME" == "ARC4" ]] || [[ "$HOSTNAME" == "ARC5" ]]; then
-			source "$ZDOTDIR/env/wayland.zsh"
-			exec systemd-cat /usr/lib/plasma-dbus-run-session-if-needed /usr/bin/startplasma-wayland
 		fi
 	fi
 fi
