@@ -24,6 +24,8 @@ export DOWNLOADS="$HOME/Downloads"
 
 # EXECUTABLES
 
+export TERMINAL="foot"
+export TERMCMD=$TERMINAL
 export OPEN="$ZDOTDIR/bin/rifle"
 export EXPLORER="nnn"
 export PICKER="picker"
