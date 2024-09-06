@@ -50,7 +50,9 @@ export ABBR_USER_ABBREVIATIONS_FILE="$ZDOTDIR/config/abbreviations"
 
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
+
 export PASSWORD_STORE_DIR="$XDG_CONFIG_HOME/password-store"
+export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 
 # NNN CONFIG
 
