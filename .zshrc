@@ -68,36 +68,6 @@ function precmd() {
     fi
 }
 
-# SET TERMINAL WINDOW TITLE
-
-## NOT WHITESPACE! This is the Braille Pattern Blank unicode character
-## This symbol is used in my fork of sov as a linebreak:
-## https://github.com/ivomac/sov
-export SEP='⠀'
-
-export SPAWN_TIME="($(date '+%H:%M'))"
-export TITLE="$SEP"
-export PREVCMD=""
-function preexec() {
-	BRANCH="${VCS_STATUS_LOCAL_BRANCH}"
-	[[ -n $BRANCH ]] && BRANCH=" [$BRANCH]"
-
-	segments=(
-		"${PWD//$HOME/~}$BRANCH"
-		"> $1"
-		"< $(date '+%H:%M') $SPAWN_TIME"
-	)
-
-	[[ -n $PREVCMD ]] && segments+="prevcmd:$SEP> $PREVCMD"
-	PREVCMD="$1"
-
-	# Again the Braille character
-    TITLE=${(j|⠀|)segments}
-
-	echo -en "\e]0;${TITLE}\a"
-}
-preexec ""
-
 # REPORT DIRECTORY CHANGES TO FOOT TERMINAL
 ## https://codeberg.org/dnkl/foot/wiki#spawning-new-terminal-instances-in-the-current-working-directory
 
