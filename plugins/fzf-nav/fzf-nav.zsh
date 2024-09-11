@@ -12,6 +12,7 @@ common_opts=(
 
 exclude_dirs=(
 	"**/.steam/**"
+	"**/.pyenv_**/**"
 	"**/cache/**"
 	"**/.local/share/**"
 	"**/__pycache__/**"

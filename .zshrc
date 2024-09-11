@@ -155,12 +155,12 @@ zle -N _cd-back-and-forth
 function pyenv() {
 	[[ -z "$1" ]] && echo "Usage: pyenv <env-name>" && return
 	if [[ ! -d ".$1" ]]; then
-		python -m venv ".$1"
+		python -m venv ".pyenv_$1"
 	fi
 	if [[ -n "$VIRTUAL_ENV" ]]; then
 		deactivate
 	else
-		source ".$1/bin/activate"
+		source ".pyenv_$1/bin/activate"
 	fi
 }
 
