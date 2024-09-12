@@ -170,9 +170,9 @@ mime ^image, ext emf, has inkscape, X, flag f = inkscape -- "$1"
 mime ^image/svg, has inkscape, X, flag f = inkscape -- "$1"
 mime ^image/svg, has display,  X, flag f = display -- "$1"
 
-mime ^image, has imv,       X, flag f = imv -- "$1"
 mime ^image, has qimgv,     X, flag f = qimgv -- "$1"
 mime ^image, has pqiv,      X, flag f = pqiv -- "$1"
+mime ^image, has imv,       X, flag f = imv -- "$1"
 mime ^image, has sxiv,      X, flag f = sxiv -- "$1"
 mime ^image, has feh,       X, flag f, !ext gif = feh -- "$1"
 mime ^image, has mirage,    X, flag f = mirage -- "$1"
@@ -187,6 +187,7 @@ mime ^image, has xviewer,   X, flag f = xviewer -- "$1"
 mime ^image, has mcomix,    X, flag f = mcomix -- "$1"
 mime ^image, has gimp,      X, flag f = gimp -- "$1"
 mime ^image, has krita,     X, flag f = krita -- "$1"
+
 ext kra,     has krita,     X, flag f = krita -- "$1"
 ext xcf,                    X, flag f = gimp -- "$1"
 
