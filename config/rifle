@@ -149,9 +149,11 @@ ext djvu, has evince, X, flag f = evince -- "$1"
 ext djvu, has atril,  X, flag f = atril -- "$1"
 ext djvu, has djview, X, flag f = djview -- "$1"
 
+ext epub, has foliate,      X, flag f = foliate -- "$1"
 ext epub, has ebook-viewer, X, flag f = ebook-viewer -- "$1"
 ext epub, has zathura,      X, flag f = zathura -- "$1"
 ext epub, has mupdf,        X, flag f = mupdf -- "$1"
+ext mobi, has foliate,      X, flag f = foliate -- "$1"
 ext mobi, has ebook-viewer, X, flag f = ebook-viewer -- "$1"
 
 ext cb[rz], has qcomicbook, X, flag f = qcomicbook "$1"
