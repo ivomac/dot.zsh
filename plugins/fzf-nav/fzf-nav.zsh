@@ -11,6 +11,7 @@ common_opts=(
 )
 
 exclude_dirs=(
+	"**/nnn/bookmarks/**"
 	"**/.steam/**"
 	"**/.pyenv_**/**"
 	"**/cache/**"
