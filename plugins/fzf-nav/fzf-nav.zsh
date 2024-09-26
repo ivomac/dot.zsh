@@ -87,9 +87,10 @@ export _FZF_OPEN_OPTS=(
 )
 
 export _FZF_NNN_PLUGIN_OPTS=(
+	"${_FZF_PREVIEW_FILES_OPTS[@]}"
 	--ansi
 	--scheme=path
-	"${_FZF_PREVIEW_FILES_OPTS[@]}"
+	--delimiter=:
 )
 
 export FZF_DEFAULT_OPTS="
