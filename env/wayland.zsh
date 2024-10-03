@@ -18,3 +18,7 @@ export QUTE_QT_WRAPPER="PyQt6"
 export QT_QPA_PLATFORM=wayland
 export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_SCALE_FACTOR_ROUNDING_POLICY=Round
+
+export TERMINAL="foot"
+export MENU="wofi -d"
+
