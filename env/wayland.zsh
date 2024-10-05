@@ -1,6 +1,9 @@
 
 # WAYLAND ENV
 
+export TERMINAL="foot"
+export MENU="wofi -d"
+
 export GDK_BACKEND=wayland
 export CLUTTER_BACKEND=wayland
 export ELM_ENGINE=wayland
@@ -19,6 +22,6 @@ export QT_QPA_PLATFORM=wayland
 export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_SCALE_FACTOR_ROUNDING_POLICY=Round
 
-export TERMINAL="foot"
-export MENU="wofi -d"
-
+export OMP_SCHEDULE=STATIC
+export OMP_PROC_BIND=CLOSE
+export GOMP_CPU_AFFINITY="N-M"
