@@ -2,7 +2,7 @@
 # WAYLAND ENV
 
 export TERMINAL="foot"
-export MENU="wofi -d"
+export MENU="menu"
 
 export GDK_BACKEND=wayland
 export CLUTTER_BACKEND=wayland
