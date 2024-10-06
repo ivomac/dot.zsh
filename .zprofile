@@ -85,6 +85,10 @@ export MYPY_CACHE_DIR="$XDG_CACHE_HOME/tmp/mypycache"
 export ZVM_KEYTIMEOUT=1
 export ZVM_CURSOR_STYLE_ENABLED=false
 
+# SYSTEMD NOTIFY
+
+export NOTIFY_SOCKET="$XDG_RUNTIME_DIR/systemd/notify"
+
 # ADD TO PATH
 
 if [[ -d "$BIN" ]] && [[ ":$PATH:" != *":$BIN:"* ]]; then
